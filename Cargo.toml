@@ -5,7 +5,7 @@ license = "MIT OR Apache-2.0"
 homepage = "https://github.com/asaaki/bevy_vach_assets"
 repository = "https://github.com/asaaki/bevy_vach_assets"
 categories = ["command-line-utilities", "encoding", "game-development"]
-keywords = ["archive", "command-line", "vach", "assets", "game"]
+keywords = ["archive", "bevy", "vach", "assets", "game"]
 readme = "README.md"
 
 [workspace]
