@@ -14,6 +14,5 @@ resolver = "2"
 members = [
     "bevy_vach_assets",
     "bva_cli",
-
-    "examples/simple",
 ]
+exclude = ["examples/*"]

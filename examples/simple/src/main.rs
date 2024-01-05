@@ -1,6 +1,3 @@
-// no idea why this is needed here, probably a workspace issue
-extern crate bevy;
-
 use bevy::prelude::*;
 
 fn main() {

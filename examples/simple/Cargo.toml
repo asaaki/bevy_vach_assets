@@ -6,4 +6,4 @@ publish = false
 
 [dependencies]
 bevy = "0.12.1"
-bevy_vach_assets ={ path = "../../bevy_vach_assets" }
+bevy_vach_assets = { version = "0.1.0", path = "../../bevy_vach_assets" }
