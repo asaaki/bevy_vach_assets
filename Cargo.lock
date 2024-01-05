@@ -2273,9 +2273,9 @@ dependencies = [
 
 [[package]]
 name = "vach"
-version = "0.5.0"
+version = "0.5.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "455e14677232b44bab4d66fc641f074c99500bb1526a6695382b6d475ffe6e0a"
+checksum = "c2c365e31c72501985c86cd96b9cf13a627e271039fb43f9d27a09702933ccb3"
 dependencies = [
  "aes-gcm",
  "brotli",
