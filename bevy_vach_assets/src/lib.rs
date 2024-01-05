@@ -166,7 +166,7 @@ impl BevyVachAssetReader {
         let as_folder = path.join("");
         self.lookup
             .keys()
-            .any(|loaded_path| loaded_path.starts_with(&as_folder) && loaded_path != &path)
+            .any(|loaded_path| loaded_path.starts_with(&as_folder) && loaded_path != path)
     }
 
     fn read_directory_sync(&self, path: &Path) -> Result<DirReader, AssetReaderError> {
