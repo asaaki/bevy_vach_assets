@@ -22,6 +22,6 @@ path = "src/main.rs"
 [dependencies]
 anyhow = "1.0.79"
 bevy_vach_assets = { version = "0.1.0", path = "../bevy_vach_assets" }
-clap = { version = "4.4.12", features = ["derive", "env", "wrap_help"] }
+clap = { version = "4.4.13", features = ["derive", "env", "wrap_help"] }
 path-slash = "0.2.1"
 walkdir = "2.4.0"
