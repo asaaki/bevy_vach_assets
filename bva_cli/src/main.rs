@@ -101,13 +101,20 @@ mod archive {
 
     pub(crate) fn run(globals: &GlobalArgs) -> anyhow::Result<()> {
         let dir = current_dir()?;
-        let assets_path = dir.join(&globals.assets_dir);
+        let assets_path = dir
+            .join(&globals.assets_dir)
+            .normalize_virtually()?
+            .into_path_buf();
         let archive_path = dir
             .join(&globals.assets_archive_dir)
             .join(ASSETS_ARCHIVE)
             .normalize_virtually()?
             .into_path_buf();
-        let key_pair_path = dir.join(&globals.secrets_dir).join(SECRETS_KEY_PAIR);
+        let key_pair_path = dir
+            .join(&globals.secrets_dir)
+            .join(SECRETS_KEY_PAIR)
+            .normalize_virtually()?
+            .into_path_buf();
         let mut issues = Vec::new();
 
         if !assets_path.exists() {
@@ -204,12 +211,21 @@ mod check_files {
         },
         ARCHIVE_MAGIC, ASSETS_ARCHIVE, ASSET_FILE_INDEX, ASSET_FILE_INDEX_SEP, SECRETS_PUBLIC_KEY,
     };
+    use normpath::PathExt;
     use std::{env::current_dir, fs::File, io::Read};
 
     pub(crate) fn run(globals: &GlobalArgs) -> anyhow::Result<()> {
         let dir = current_dir()?;
-        let archive_path = dir.join(&globals.assets_archive_dir).join(ASSETS_ARCHIVE);
-        let public_key_path = dir.join(&globals.secrets_dir).join(SECRETS_PUBLIC_KEY);
+        let archive_path = dir
+            .join(&globals.assets_archive_dir)
+            .join(ASSETS_ARCHIVE)
+            .normalize_virtually()?
+            .into_path_buf();
+        let public_key_path = dir
+            .join(&globals.secrets_dir)
+            .join(SECRETS_PUBLIC_KEY)
+            .normalize_virtually()?
+            .into_path_buf();
         let mut issues = Vec::new();
 
         if !archive_path.exists() {
@@ -259,11 +275,15 @@ mod check_files {
 mod generate {
     use crate::GlobalArgs;
     use bevy_vach_assets::{vach, SECRETS_KEY_PAIR, SECRETS_PRIVATE_KEY, SECRETS_PUBLIC_KEY};
+    use normpath::PathExt;
     use std::{env::current_dir, io::Write};
 
     pub(crate) fn run(globals: &GlobalArgs) -> anyhow::Result<()> {
         let dir = current_dir()?;
-        let secrets_dir = dir.join(&globals.secrets_dir);
+        let secrets_dir = dir
+            .join(&globals.secrets_dir)
+            .normalize_virtually()?
+            .into_path_buf();
 
         let mut issues = Vec::new();
         if secrets_dir.exists() {
