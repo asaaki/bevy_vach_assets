@@ -108,7 +108,7 @@ impl BevyVachAssetReader {
         } else {
             let dir = std::env::current_dir().expect("could not get current directory");
             let archive_path = dir.join(ARCHIVE_DIR).join(ASSETS_ARCHIVE);
-            let f = File::open(&archive_path).expect("could not open the asset archive file");
+            let f = File::open(archive_path).expect("could not open the asset archive file");
             let boxed: Readable = Box::new(f);
             boxed
         };

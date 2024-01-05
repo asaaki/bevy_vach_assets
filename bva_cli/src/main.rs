@@ -1,7 +1,7 @@
 //! BVA CLI
 use std::path::PathBuf;
 
-use bevy_vach_assets::{ASSETS_DIR, ARCHIVE_DIR, SECRETS_DIR};
+use bevy_vach_assets::{ARCHIVE_DIR, ASSETS_DIR, SECRETS_DIR};
 use clap::{Args, Parser, Subcommand};
 
 #[derive(Parser, Debug)]
@@ -86,7 +86,7 @@ mod archive {
             prelude::{Builder, BuilderConfig, SigningKey},
             SIGNATURE_LENGTH,
         },
-        ASSETS_DIR, ASSETS_ARCHIVE, ARCHIVE_MAGIC, ASSET_FILE_INDEX, ASSET_FILE_INDEX_SEP,
+        ARCHIVE_MAGIC, ASSETS_ARCHIVE, ASSETS_DIR, ASSET_FILE_INDEX, ASSET_FILE_INDEX_SEP,
         SECRETS_KEY_PAIR,
     };
     use path_slash::PathExt;
@@ -195,8 +195,7 @@ mod check_files {
             archive::{Archive, ArchiveConfig},
             crypto::VerifyingKey,
         },
-        ASSETS_ARCHIVE, ARCHIVE_MAGIC, ASSET_FILE_INDEX, ASSET_FILE_INDEX_SEP,
-        SECRETS_PUBLIC_KEY,
+        ARCHIVE_MAGIC, ASSETS_ARCHIVE, ASSET_FILE_INDEX, ASSET_FILE_INDEX_SEP, SECRETS_PUBLIC_KEY,
     };
     use std::{env::current_dir, fs::File, io::Read};
 
