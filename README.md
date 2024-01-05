@@ -12,6 +12,12 @@ It builds on [vach] for the archive format which provides compression and encryp
 
 Both of those features are non-negotiatable defaults in `BVA`.
 
+### Bevy compatibility
+
+| bevy | bevy_vach_assets |
+| ---- | -----------------|
+| 0.12 | 0.1.*            |
+
 ### Limitations and constraints
 
 As mentioned compression and encryption (plus signing) are enabled by default.
