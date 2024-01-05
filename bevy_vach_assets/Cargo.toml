@@ -5,6 +5,13 @@ description = "Bevy Vach Assets is a plugin for Bevy Engine that allows you to l
 version.workspace = true
 edition.workspace = true
 license.workspace = true
+homepage.workspace = true
+repository.workspace = true
+categories.workspace = true
+keywords.workspace = true
+readme.workspace = true
+
+include = ["src/*", "Cargo.toml", "../README.md"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
