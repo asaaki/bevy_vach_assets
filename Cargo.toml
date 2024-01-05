@@ -10,7 +10,13 @@ categories = [
     "compression",
     "cryptography",
 ]
-keywords = ["archive", "bevy", "vach", "assets", "game"]
+keywords = [
+    "bevy",
+    "assets",
+    "archive",
+    "vach",
+    "game",
+]
 readme = "README.md"
 
 [workspace]
