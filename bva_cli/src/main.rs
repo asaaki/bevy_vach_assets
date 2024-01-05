@@ -80,6 +80,7 @@ fn main() -> anyhow::Result<()> {
 }
 
 mod archive {
+    use crate::GlobalArgs;
     use bevy_vach_assets::{
         vach::{
             builder::{CompressMode, CompressionAlgorithm, Leaf},
@@ -89,7 +90,8 @@ mod archive {
         ARCHIVE_MAGIC, ASSETS_ARCHIVE, ASSETS_DIR, ASSET_FILE_INDEX, ASSET_FILE_INDEX_SEP,
         SECRETS_KEY_PAIR,
     };
-    use path_slash::PathExt;
+    use normpath::PathExt;
+    use path_slash::PathExt as _;
     use std::{
         env::current_dir,
         fs::File,
@@ -97,18 +99,21 @@ mod archive {
     };
     use walkdir::{DirEntry, WalkDir};
 
-    use crate::GlobalArgs;
-
     pub(crate) fn run(globals: &GlobalArgs) -> anyhow::Result<()> {
         let dir = current_dir()?;
-        let archive_path = dir.join(&globals.assets_archive_dir).join(ASSETS_ARCHIVE);
+        let assets_path = dir.join(&globals.assets_dir);
+        let archive_path = dir
+            .join(&globals.assets_archive_dir)
+            .join(ASSETS_ARCHIVE)
+            .normalize_virtually()?
+            .into_path_buf();
         let key_pair_path = dir.join(&globals.secrets_dir).join(SECRETS_KEY_PAIR);
         let mut issues = Vec::new();
 
-        if !archive_path.exists() {
+        if !assets_path.exists() {
             issues.push(format!(
                 "Asset directory '{}' does not exist",
-                archive_path.to_string_lossy()
+                assets_path.to_string_lossy()
             ));
         }
         if !key_pair_path.exists() {
@@ -125,7 +130,7 @@ mod archive {
         }
 
         let keypair = {
-            let mut key_pair_file = std::fs::File::open(SECRETS_KEY_PAIR)?;
+            let mut key_pair_file = std::fs::File::open(key_pair_path)?;
             let mut key_pair_bytes = [0u8; SIGNATURE_LENGTH];
             key_pair_file.read_exact(&mut key_pair_bytes)?;
             SigningKey::from_keypair_bytes(&key_pair_bytes)?
@@ -161,8 +166,10 @@ mod archive {
         let data = Cursor::new(files.join(ASSET_FILE_INDEX_SEP).into_bytes());
         builder.add(data, ASSET_FILE_INDEX)?;
 
-        let mut target = File::create(ASSETS_ARCHIVE)?;
+        let mut target = File::create(&archive_path)?;
         builder.dump(&mut target, &config)?;
+
+        println!("Created archive in '{}'", archive_path.to_string_lossy());
 
         Ok(())
     }
