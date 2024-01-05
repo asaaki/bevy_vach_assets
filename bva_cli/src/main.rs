@@ -90,8 +90,7 @@ mod archive {
         ARCHIVE_MAGIC, ASSETS_ARCHIVE, ASSETS_DIR, ASSET_FILE_INDEX, ASSET_FILE_INDEX_SEP,
         SECRETS_KEY_PAIR,
     };
-    use normpath::PathExt;
-    use path_slash::PathExt as _;
+    use normalize_path::NormalizePath;
     use std::{
         env::current_dir,
         fs::File,
@@ -101,20 +100,17 @@ mod archive {
 
     pub(crate) fn run(globals: &GlobalArgs) -> anyhow::Result<()> {
         let dir = current_dir()?;
-        let assets_path = dir
-            .join(&globals.assets_dir)
-            .normalize_virtually()?
-            .into_path_buf();
+        let assets_path = dir.join(&globals.assets_dir).as_path().normalize();
         let archive_path = dir
             .join(&globals.assets_archive_dir)
             .join(ASSETS_ARCHIVE)
-            .normalize_virtually()?
-            .into_path_buf();
+            .as_path()
+            .normalize();
         let key_pair_path = dir
             .join(&globals.secrets_dir)
             .join(SECRETS_KEY_PAIR)
-            .normalize_virtually()?
-            .into_path_buf();
+            .as_path()
+            .normalize();
         let mut issues = Vec::new();
 
         if !assets_path.exists() {
@@ -159,6 +155,7 @@ mod archive {
 
         let walker = WalkDir::new(ASSETS_DIR).follow_links(true).into_iter();
         for entry in walker.filter_entry(|e| !is_hidden(e)) {
+            use path_slash::PathExt;
             let entry = entry?;
             let path = entry.path().strip_prefix(ASSETS_DIR)?.to_slash_lossy();
             if should_skip(&entry) {
@@ -211,7 +208,7 @@ mod check_files {
         },
         ARCHIVE_MAGIC, ASSETS_ARCHIVE, ASSET_FILE_INDEX, ASSET_FILE_INDEX_SEP, SECRETS_PUBLIC_KEY,
     };
-    use normpath::PathExt;
+    use normalize_path::NormalizePath;
     use std::{env::current_dir, fs::File, io::Read};
 
     pub(crate) fn run(globals: &GlobalArgs) -> anyhow::Result<()> {
@@ -219,13 +216,13 @@ mod check_files {
         let archive_path = dir
             .join(&globals.assets_archive_dir)
             .join(ASSETS_ARCHIVE)
-            .normalize_virtually()?
-            .into_path_buf();
+            .as_path()
+            .normalize();
         let public_key_path = dir
             .join(&globals.secrets_dir)
             .join(SECRETS_PUBLIC_KEY)
-            .normalize_virtually()?
-            .into_path_buf();
+            .as_path()
+            .normalize();
         let mut issues = Vec::new();
 
         if !archive_path.exists() {
@@ -275,15 +272,12 @@ mod check_files {
 mod generate {
     use crate::GlobalArgs;
     use bevy_vach_assets::{vach, SECRETS_KEY_PAIR, SECRETS_PRIVATE_KEY, SECRETS_PUBLIC_KEY};
-    use normpath::PathExt;
+    use normalize_path::NormalizePath;
     use std::{env::current_dir, io::Write};
 
     pub(crate) fn run(globals: &GlobalArgs) -> anyhow::Result<()> {
         let dir = current_dir()?;
-        let secrets_dir = dir
-            .join(&globals.secrets_dir)
-            .normalize_virtually()?
-            .into_path_buf();
+        let secrets_dir = dir.join(&globals.secrets_dir).as_path().normalize();
 
         let mut issues = Vec::new();
         if secrets_dir.exists() {
