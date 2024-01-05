@@ -1,0 +1,9 @@
+[package]
+name = "simple_bva_example"
+version = "0.1.0"
+
+publish = false
+
+[dependencies]
+bevy = "0.12.1"
+bevy_vach_assets ={ path = "../../bevy_vach_assets" }

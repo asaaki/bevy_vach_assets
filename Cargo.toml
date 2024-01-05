@@ -1,0 +1,19 @@
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+license = "MIT OR Apache-2.0"
+homepage = "https://github.com/asaaki/bevy_vach_assets"
+repository = "https://github.com/asaaki/bevy_vach_assets"
+categories = ["command-line-utilities", "encoding", "game-development"]
+keywords = ["archive", "command-line", "vach", "assets", "game"]
+readme = "README.md"
+
+[workspace]
+resolver = "2"
+
+members = [
+    "bevy_vach_assets",
+    "bva_cli",
+
+    "examples/simple",
+]
