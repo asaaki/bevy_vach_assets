@@ -830,9 +830,9 @@ dependencies = [
 
 [[package]]
 name = "brotli"
-version = "3.4.0"
+version = "6.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "516074a47ef4bce09577a3b379392300159ce5b1ba2e501ff1c819950066100f"
+checksum = "74f7971dbd9326d58187408ab83117d8ac1bb9c17b085fdacd1cf2f598719b6b"
 dependencies = [
  "alloc-no-stdlib",
  "alloc-stdlib",
@@ -841,9 +841,9 @@ dependencies = [
 
 [[package]]
 name = "brotli-decompressor"
-version = "2.5.1"
+version = "4.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4e2e4afe60d7dd600fdd3de8d0f08c2b7ec039712e3b6137ff98b7004e82de4f"
+checksum = "9a45bd2e4095a8b518033b128020dd4a55aab1c0a381ba4404a472630f4bc362"
 dependencies = [
  "alloc-no-stdlib",
  "alloc-stdlib",
@@ -2273,15 +2273,14 @@ dependencies = [
 
 [[package]]
 name = "vach"
-version = "0.5.5"
+version = "0.6.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e36952a168221690ab9adc1dd46a7fb650449632f262d1fa86e4baed865eb7dc"
+checksum = "df0f7c862de2709c7a39741492c0f2bf9f48518dc7ade68a61f82da1da909221"
 dependencies = [
  "aes-gcm",
  "brotli",
  "ed25519-dalek",
  "lz4_flex",
- "parking_lot",
  "rand",
  "snap",
  "thiserror",
