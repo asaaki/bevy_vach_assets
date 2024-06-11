@@ -16,6 +16,6 @@ include = ["src/*", "Cargo.toml", "../README.md"]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-bevy = { version = "0.12", default-features = false, features = ["bevy_asset"] }
+bevy = { version = "0.13", default-features = false, features = ["bevy_asset"] }
 futures-lite = { version = "2.3.0", default-features = false, features = ["std"] }
-vach = { version = "0.5.5", features = ["compression", "crypto"] }
+vach = { version = "0.6.0", features = ["compression", "crypto"] }
