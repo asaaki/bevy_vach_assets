@@ -261,7 +261,7 @@ mod check_files {
 
         println!("Files in archive:");
         for (i, file) in files.iter().enumerate() {
-            let f = archive.fetch_mut(&i.to_string())?;
+            let f = archive.fetch_mut(i.to_string())?;
             println!("-> {} [{}]", file, f.data.len());
         }
 
