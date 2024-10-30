@@ -17,5 +17,5 @@ include = ["src/*", "Cargo.toml", "../README.md"]
 
 [dependencies]
 bevy = { version = "0.13.2", default-features = false, features = ["bevy_asset"] }
-futures-lite = { version = "2.3.0", default-features = false, features = ["std"] }
+futures-lite = { version = "2.4.0", default-features = false, features = ["std"] }
 vach = { version = "0.6.2", features = ["compression", "crypto"] }
