@@ -1,15 +1,15 @@
 use bevy::{
     asset::io::{
         AssetReader, AssetReaderError, AssetSource, AssetSourceId, ErasedAssetReader, PathStream,
-        Reader,
+        Reader, VecReader,
     },
     prelude::{App, AssetApp, AssetPlugin, Plugin},
     utils::HashMap,
 };
-use futures_lite::{io::Cursor, Stream};
+use futures_lite::Stream;
 use std::{
     fs::File,
-    io::{Cursor as StdCursor, Read, Seek},
+    io::{Cursor, Read, Seek},
     path::{Path, PathBuf},
     pin::Pin,
     task::Poll,
@@ -65,9 +65,9 @@ impl Plugin for BevyVachAssetsPlugin {
 trait ReadExt: Read + Seek + Send + Sync + 'static {}
 
 impl ReadExt for File {}
-impl ReadExt for StdCursor<Box<[u8]>> {}
-impl ReadExt for StdCursor<Vec<u8>> {}
-impl ReadExt for StdCursor<&'static [u8]> {}
+impl ReadExt for Cursor<Box<[u8]>> {}
+impl ReadExt for Cursor<Vec<u8>> {}
+impl ReadExt for Cursor<&'static [u8]> {}
 
 type Readable = Box<dyn ReadExt>;
 
@@ -102,8 +102,8 @@ impl BevyVachAssetReader {
         // note: tried to use web-sys and wrapping in a TaskPool, but always panicked on
         //       an option unwrap for results when awaiting the fetch; no idea what's up
         let target = if let Some(archive) = static_archive {
-            let cursor = StdCursor::new(archive);
-            let boxed: Readable = Box::new(cursor);
+            let cursor = Cursor::new(archive);
+            let boxed = Box::new(cursor);
             boxed
         } else if cfg!(target_arch = "wasm32") {
             bevy::log::error!("no static/embedded archive found, but required for wasm target");
@@ -153,11 +153,11 @@ impl BevyVachAssetReader {
     /// # Errors
     ///
     /// This will returns an error if the path is not known.
-    fn load_path_sync(&self, path: &Path) -> Result<DataReader, AssetReaderError> {
+    fn load_path_sync<'a>(&'a self, path: &'a Path) -> Result<VecReader, AssetReaderError> {
         self.lookup
             .get(path)
             .and_then(|id| self.archive.fetch(id).ok())
-            .map(|r| DataReader::new(r.data))
+            .map(|r| VecReader::new(r.data.to_vec()))
             .ok_or_else(|| AssetReaderError::NotFound(path.to_path_buf()))
     }
 
@@ -188,9 +188,12 @@ impl BevyVachAssetReader {
 }
 
 impl AssetReader for BevyVachAssetReader {
-    async fn read<'a>(&'a self, path: &'a Path) -> Result<Box<Reader<'a>>, AssetReaderError> {
+    async fn read<'a>(&'a self, path: &'a Path) -> Result<impl Reader + 'a, AssetReaderError> {
         if self.has_file_sync(path) {
-            self.load_path_sync(path).map(|reader| reader.boxed())
+            self.load_path_sync(path).map(|reader| {
+                let boxed: Box<dyn Reader> = Box::new(reader);
+                boxed
+            })
         } else if let Some(fallback) = self.fallback.as_ref() {
             fallback.read(path).await
         } else {
@@ -198,13 +201,16 @@ impl AssetReader for BevyVachAssetReader {
         }
     }
 
-    async fn read_meta<'a>(&'a self, path: &'a Path) -> Result<Box<Reader<'a>>, AssetReaderError> {
+    async fn read_meta<'a>(&'a self, path: &'a Path) -> Result<impl Reader + 'a, AssetReaderError> {
         let meta_path = get_meta_path(path);
 
         if self.has_file_sync(&meta_path) {
-            self.load_path_sync(&meta_path).map(|reader| reader.boxed())
+            self.load_path_sync(&meta_path).map(|reader| {
+                let boxed: Box<dyn Reader> = Box::new(reader);
+                boxed
+            })
         } else if let Some(fallback) = self.fallback.as_ref() {
-            fallback.read_meta(path).await
+            fallback.read_meta(path).await as Result<Box<dyn Reader>, AssetReaderError>
         } else {
             Err(AssetReaderError::NotFound(meta_path))
         }
@@ -222,25 +228,6 @@ impl AssetReader for BevyVachAssetReader {
 
     async fn is_directory<'a>(&'a self, path: &'a Path) -> Result<bool, AssetReaderError> {
         Ok(self.is_directory_sync(path))
-    }
-}
-
-struct DataReader(Cursor<Box<[u8]>>);
-
-impl From<Cursor<Box<[u8]>>> for DataReader {
-    fn from(cursor: Cursor<Box<[u8]>>) -> Self {
-        Self(cursor)
-    }
-}
-
-impl DataReader {
-    fn new(data: Box<[u8]>) -> Self {
-        Self(Cursor::new(data))
-    }
-
-    fn boxed<'a>(self) -> Box<Reader<'a>> {
-        let boxed: Box<Reader> = Box::new(self.0);
-        boxed
     }
 }
 
