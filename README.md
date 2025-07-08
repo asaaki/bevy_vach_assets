@@ -1,5 +1,8 @@
 # Bevy Vach Assets [BVA]
 
+> [!CAUTION]
+> Currently outdated and unmaintained.
+
 **Warning! Very basic, very opinionated, rough edges everywhere!**
 
 _This project is written to work for me and my ideas, it might not suite your needs._
